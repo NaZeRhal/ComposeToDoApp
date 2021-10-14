@@ -11,7 +11,7 @@ interface ToDoDao {
     fun getAllTasks(): Flow<List<ToDoTask>>
 
     @Query("SELECT * FROM todo_table WHERE id = :id")
-    suspend fun getTaskById(id: Int): ToDoTask
+    fun getTaskById(id: Int): Flow<ToDoTask>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addTask(task: ToDoTask)
@@ -19,8 +19,8 @@ interface ToDoDao {
     @Update
     suspend fun updateTask(task: ToDoTask)
 
-    @Delete
-    suspend fun deleteTask(task: ToDoTask)
+    @Query("DELETE FROM todo_table WHERE id=:id")
+    suspend fun deleteTaskById(id: Int)
 
     @Query("DELETE FROM todo_table")
     suspend fun deleteAll()

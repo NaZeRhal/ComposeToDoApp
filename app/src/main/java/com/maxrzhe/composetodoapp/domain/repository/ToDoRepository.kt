@@ -7,13 +7,13 @@ interface ToDoRepository {
 
     fun getAllTasks(): Flow<List<ToDoTask>>
 
-    suspend fun getTaskById(id: Int): ToDoTask
+    fun getTaskById(id: Int): Flow<ToDoTask>
 
     suspend fun addTask(task: ToDoTask)
 
     suspend fun updateTask(task: ToDoTask)
 
-    suspend fun deleteTask(task: ToDoTask)
+    suspend fun deleteTaskById(id: Int)
 
     suspend fun deleteAll()
 

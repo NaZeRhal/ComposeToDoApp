@@ -1,4 +1,4 @@
-package com.maxrzhe.composetodoapp.presentation.tasks.components
+package com.maxrzhe.composetodoapp.presentation.tasks_screen.components
 
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
@@ -21,7 +21,7 @@ fun TasksListFab(
     ) {
         Icon(
             imageVector = Icons.Default.Add,
-            contentDescription = stringResource(id = R.string.fab_add_description),
+            contentDescription = stringResource(R.string.fab_add_description),
             tint = Color.White
         )
     }

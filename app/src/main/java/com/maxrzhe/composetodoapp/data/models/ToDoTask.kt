@@ -12,3 +12,5 @@ data class ToDoTask(
     val description: String,
     val priority: Priority
 )
+
+class InvalidTaskException(message: String) : Exception(message)

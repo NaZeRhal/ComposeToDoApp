@@ -7,8 +7,8 @@ import com.maxrzhe.composetodoapp.presentation.ui.theme.MediumPriorityColor
 import com.maxrzhe.composetodoapp.presentation.ui.theme.NonePriorityColor
 
 enum class Priority(val color: Color) {
-    HIGH(HighPriorityColor),
-    MEDIUM(MediumPriorityColor),
+    NONE(NonePriorityColor),
     LOW(LowPriorityColor),
-    NONE(NonePriorityColor)
+    MEDIUM(MediumPriorityColor),
+    HIGH(HighPriorityColor)
 }

@@ -1,4 +1,4 @@
-package com.maxrzhe.composetodoapp.presentation.tasks.components
+package com.maxrzhe.composetodoapp.presentation.tasks_screen.components.appbar
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Row
@@ -12,8 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.maxrzhe.composetodoapp.data.models.Priority
-import com.maxrzhe.composetodoapp.presentation.ui.theme.MEDIUM_PADDING
-import com.maxrzhe.composetodoapp.presentation.ui.theme.PRIORITY_INDICATOR_SIZE
+import com.maxrzhe.composetodoapp.presentation.ui.theme.*
 
 @Composable
 fun PriorityItem(priority: Priority) {
@@ -28,14 +27,16 @@ fun PriorityItem(priority: Priority) {
         Spacer(modifier = Modifier.width(MEDIUM_PADDING))
         Text(
             text = priority.name,
-            style = MaterialTheme.typography.subtitle1,
+            style = Typography.subtitle1,
             color = MaterialTheme.colors.onSurface
         )
     }
 }
 
 @Composable
-@Preview(showBackground = true)
+@Preview(showBackground = true, backgroundColor = 0x000000)
 fun PriorityItemPreview() {
-    PriorityItem(priority = Priority.HIGH)
+    ComposeToDoAppTheme(darkTheme = true) {
+        PriorityItem(priority = Priority.MEDIUM)
+    }
 }

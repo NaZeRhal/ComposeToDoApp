@@ -16,11 +16,13 @@ val DarkGray = Color(0xff141414)
 val LowPriorityColor = Color(0xff00c980)
 val MediumPriorityColor = Color(0xffffc114)
 val HighPriorityColor = Color(0xffff4646)
-val NonePriorityColor = Color(0xffffffff)
+val NonePriorityColor = Color(0xff9c9c9c)
+
+val FabDarkBackgroundColor = Color(0xFF148423)
 
 val Colors.topAppBarContentColor: Color
     @Composable
-    get() = if (isLight) Color.White else LightGray
+    get() = if (isLight) Color.White else Color.LightGray
 
 val Colors.topAppBarBackgroundColor: Color
     @Composable
@@ -28,4 +30,12 @@ val Colors.topAppBarBackgroundColor: Color
 
 val Colors.fabAddBackgroundColor: Color
     @Composable
-    get() = if (isLight) Teal200 else Purple700
+    get() = if (isLight) Teal200 else FabDarkBackgroundColor
+
+val Colors.taskItemBackgroundColor: Color
+    @Composable
+    get() = if (isLight) Color.White else DarkGray
+
+val Colors.taskItemTextColor: Color
+    @Composable
+    get() = if (isLight) DarkGray else LightGray

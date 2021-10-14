@@ -1,6 +1,21 @@
 <resources>
     <string name="app_name">Compose ToDo App</string>
-    <string name="fab_add_description">Add button</string>
-    <string name="appbar_search_icon_description">Search icon</string>
-    <string name="appbar_sort_icon_description">Sort icon</string>
+    <string name="fab_add_description">Add</string>
+    <string name="appbar_search_icon_description">Search</string>
+    <string name="appbar_sort_icon_description">Sort</string>
+    <string name="appbar_delete_all_icon_description">Delete All</string>
+    <string name="appbar_close_icon_description">Close</string>
+    <string name="tasks_title">Tasks</string>
+    <string name="search_placeholder">Search…</string>
+    <string name="empty_list_icon">Sad face</string>
+    <string name="no_tasks_found">No Tasks Found</string>
+    <string name="add_new_task_title">Add Task</string>
+    <string name="back_button">Back button</string>
+    <string name="close_button">Close button</string>
+    <string name="add_button">Add button</string>
+    <string name="update_button">Update button</string>
+    <string name="delete_button">Delete button</string>
+    <string name="priority_dropdown_icon">Priority dropdown menu</string>
+    <string name="title_text_field">Title</string>
+    <string name="description_text_field">Description</string>
 </resources>

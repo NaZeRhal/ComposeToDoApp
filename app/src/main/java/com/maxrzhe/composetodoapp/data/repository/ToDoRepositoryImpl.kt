@@ -13,7 +13,7 @@ class ToDoRepositoryImpl @Inject constructor(private val toDoDao: ToDoDao) : ToD
         return toDoDao.getAllTasks()
     }
 
-    override suspend fun getTaskById(id: Int): ToDoTask {
+    override fun getTaskById(id: Int): Flow<ToDoTask> {
         return toDoDao.getTaskById(id)
     }
 
@@ -25,8 +25,8 @@ class ToDoRepositoryImpl @Inject constructor(private val toDoDao: ToDoDao) : ToD
         toDoDao.updateTask(task)
     }
 
-    override suspend fun deleteTask(task: ToDoTask) {
-        toDoDao.deleteTask(task)
+    override suspend fun deleteTaskById(id: Int) {
+        toDoDao.deleteTaskById(id)
     }
 
     override suspend fun deleteAll() {
