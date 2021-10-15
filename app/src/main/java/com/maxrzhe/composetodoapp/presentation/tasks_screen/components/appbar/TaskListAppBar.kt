@@ -9,7 +9,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
@@ -20,6 +20,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import com.maxrzhe.composetodoapp.R
 import com.maxrzhe.composetodoapp.data.models.Priority
+import com.maxrzhe.composetodoapp.presentation.components.DisplayAlertDialog
 import com.maxrzhe.composetodoapp.presentation.tasks_screen.events.TaskListEvent
 import com.maxrzhe.composetodoapp.presentation.tasks_screen.states.SearchAppBarState
 import com.maxrzhe.composetodoapp.presentation.tasks_screen.viewmodel.TasksListViewModel
@@ -51,10 +52,12 @@ fun TaskListAppBar(
                     viewModel.onAppBarEvent(TaskListEvent.ChangeSearchText(newText))
                 },
                 onSearchClick = { searchText ->
-                    viewModel.onAppBarEvent(TaskListEvent.Search(searchText))
+                    if (text.isNotBlank()) {
+                        viewModel.onAppBarEvent(TaskListEvent.Search(searchText))
+                    }
                 },
                 onCloseClick = {
-                    if (text.isBlank()) {
+                    if (text.isBlank() && viewModel.searchAppBarState.value !is SearchAppBarState.Triggered) {
                         viewModel.onAppBarEvent(TaskListEvent.CloseSearchBar)
                     } else {
                         viewModel.onAppBarEvent(TaskListEvent.ClearSearchBar)
@@ -80,11 +83,39 @@ fun DefaultAppBar(
         },
         backgroundColor = MaterialTheme.colors.primary,
         actions = {
-            SearchIconButton(onSearchIconClick = onSearchClick)
-            SortIconButton(onSortIconClick = onSortClick)
-            DeleteAllIconButton(onDeleteAllClick = onDeleteAllClick)
+            DefaultAppBarActions(
+                onSearchClick = onSearchClick,
+                onSortClick = onSortClick,
+                onDeleteAllClick = onDeleteAllClick
+            )
         }
     )
+}
+
+@Composable
+fun DefaultAppBarActions(
+    onSearchClick: () -> Unit,
+    onSortClick: (Priority) -> Unit,
+    onDeleteAllClick: () -> Unit
+) {
+    var openDialog by remember { mutableStateOf(false) }
+
+    DisplayAlertDialog(
+        title = stringResource(R.string.remove_all),
+        message = stringResource(R.string.delete_all_message),
+        openDialog = openDialog,
+        onDismiss = {
+            openDialog = false
+        },
+        onConfirm = {
+            openDialog = false
+            onDeleteAllClick()
+        }
+    )
+
+    SearchIconButton(onSearchIconClick = onSearchClick)
+    SortIconButton(onSortIconClick = onSortClick)
+    DeleteAllIconButton(onDeleteAllClick = { openDialog = true })
 }
 
 @Composable
@@ -110,7 +141,8 @@ fun SearchAppBar(
             leadingIcon = {
                 IconButton(
                     onClick = {
-                        onSearchClick(text)
+                        onSearchClick(text.trim())
+                        focusManager.clearFocus()
                     },
                     modifier = Modifier.alpha(ContentAlpha.medium)
                 ) {
@@ -153,10 +185,8 @@ fun SearchAppBar(
             ),
             keyboardActions = KeyboardActions(
                 onSearch = {
-                    if(text.isNotEmpty()) {
-                        onSearchClick(text)
-                        focusManager.clearFocus()
-                    }
+                    onSearchClick(text.trim())
+                    focusManager.clearFocus()
                 }
             ),
             colors = TextFieldDefaults.textFieldColors(

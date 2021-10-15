@@ -6,4 +6,7 @@ object Constants {
     const val DATABASE_NAME = "todo_db"
 
     const val MAX_TITLE_LENGTH = 40
+
+    const val PREFERENCE_NAME = "todo_preferences"
+    const val PREFERENCE_KEY = "sort_state"
 }

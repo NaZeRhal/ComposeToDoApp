@@ -3,12 +3,13 @@ package com.maxrzhe.composetodoapp.presentation.detail_screen.components.appbar
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.maxrzhe.composetodoapp.R
 import com.maxrzhe.composetodoapp.core.util.AppBarDetailClickEvent
+import com.maxrzhe.composetodoapp.presentation.components.DisplayAlertDialog
 import com.maxrzhe.composetodoapp.presentation.detail_screen.events.AppBarDetailEvent
 
 @Composable
@@ -17,7 +18,6 @@ fun TaskDetailAppBar(
     taskTitle: String,
     onAppBarButtonClick: AppBarDetailClickEvent
 ) {
-
     if (!isNewTask) {
         UpdateTaskAppBar(
             taskTitle = taskTitle,
@@ -55,7 +55,6 @@ fun NewTaskAppBar(
 fun UpdateTaskAppBar(
     taskTitle: String,
     onAppBarButtonClick: AppBarDetailClickEvent
-
 ) {
     TopAppBar(
         navigationIcon = {
@@ -71,10 +70,37 @@ fun UpdateTaskAppBar(
         },
         backgroundColor = MaterialTheme.colors.primary,
         actions = {
-            DeleteButton(onDeleteClick = onAppBarButtonClick)
-            SaveUpdatesButton(onUpdateClick = onAppBarButtonClick)
+            UpdateAppBarActions(
+                title = taskTitle,
+                onAppBarButtonClick = onAppBarButtonClick
+            )
         }
     )
+}
+
+@Composable
+fun UpdateAppBarActions(
+    title: String,
+    onAppBarButtonClick: AppBarDetailClickEvent
+) {
+    var openDialog by remember { mutableStateOf(false) }
+
+    DisplayAlertDialog(
+        title = stringResource(R.string.delete_task_alert_title, title),
+        message = stringResource(R.string.delete_task_message, title),
+        openDialog = openDialog,
+        onDismiss = {
+            openDialog = false
+        },
+        onConfirm = {
+            openDialog = false
+            onAppBarButtonClick(AppBarDetailEvent.DeleteTask)
+        }
+    )
+
+    DeleteButton(onDeleteClick = { openDialog = true })
+    SaveUpdatesButton(onUpdateClick = onAppBarButtonClick)
+
 }
 
 @Composable
@@ -139,9 +165,9 @@ fun SaveUpdatesButton(
 
 @Composable
 fun DeleteButton(
-    onDeleteClick: AppBarDetailClickEvent
+    onDeleteClick: () -> Unit
 ) {
-    IconButton(onClick = { onDeleteClick(AppBarDetailEvent.DeleteTask) }) {
+    IconButton(onClick = { onDeleteClick() }) {
         Icon(
             imageVector = Icons.Default.Delete,
             contentDescription = stringResource(

@@ -7,8 +7,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import com.maxrzhe.composetodoapp.R
 import com.maxrzhe.composetodoapp.core.util.TaskChangeClickEvent
@@ -24,6 +24,8 @@ fun DetailTaskContent(
     priority: Priority,
     onTaskChangeClickEvent: TaskChangeClickEvent
 ) {
+    val focusManager = LocalFocusManager.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -40,7 +42,12 @@ fun DetailTaskContent(
                 Text(text = stringResource(R.string.title_text_field))
             },
             textStyle = MaterialTheme.typography.body1,
-            singleLine = true
+            singleLine = true,
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    focusManager.clearFocus()
+                }
+            )
         )
         Spacer(modifier = Modifier.height(SMALL_PADDING))
         PriorityDropDown(

@@ -73,12 +73,13 @@ class TasksListViewModel @Inject constructor(
             is TaskListEvent.ClearSearchBar -> {
                 _searchText.value = ""
                 getAllTasks()
+                _searchAppBarState.value = SearchAppBarState.Opened
             }
             is TaskListEvent.Search -> {
                 _screenState.value = CommonScreenState.Loading
                 viewModelScope.launch {
                     try {
-                        repository.searchDatabase(taskListEvent.text).collect {
+                        repository.searchDatabase("%${taskListEvent.text}%").collect {
                             Log.i(TAG, "onAppBarEvent: $it")
                             _screenState.value = SuccessState.WithData(it)
                         }

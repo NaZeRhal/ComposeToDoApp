@@ -44,7 +44,7 @@ fun SortIconButton(onSortIconClick: (Priority) -> Unit) {
         onDismissRequest = { expanded = false }
     ) {
         for (priority in Priority.values()) {
-            if (priority != Priority.NONE) {
+            if (priority != Priority.MEDIUM) {
                 DropdownMenuItem(
                     onClick = {
                         expanded = false
