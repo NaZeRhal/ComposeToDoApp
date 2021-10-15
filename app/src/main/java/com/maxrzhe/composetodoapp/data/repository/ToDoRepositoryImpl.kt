@@ -13,7 +13,7 @@ class ToDoRepositoryImpl @Inject constructor(private val toDoDao: ToDoDao) : ToD
         return toDoDao.getAllTasks()
     }
 
-    override fun getTaskById(id: Int): Flow<ToDoTask> {
+    override fun getTaskById(id: Int): Flow<ToDoTask?> {
         return toDoDao.getTaskById(id)
     }
 

@@ -11,5 +11,6 @@ sealed class DetailShowEvent: DetailUiEvent {
 
 sealed class DetailTaskNavigation: DetailUiEvent {
     object AfterAddOrUpdateNavigation: DetailTaskNavigation()
+    data class DeleteRequest(val deleteTaskId: Int): DetailTaskNavigation()
 }
 

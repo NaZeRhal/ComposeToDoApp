@@ -18,7 +18,10 @@ import com.maxrzhe.composetodoapp.presentation.states.SuccessState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -57,13 +60,14 @@ class DetailTaskViewModel @Inject constructor(
                 repository.getTaskById(id).onEach { task ->
                     _screenState.value = CommonScreenState.Loading
                     delay(400)
-                    currentTaskId = task.id
-                    _titleState.value = task.title
-                    _descriptionState.value = task.description
-                    _priorityState.value = task.priority
+                    task?.apply {
+                        currentTaskId = task.id
+                        _titleState.value = title
+                        _descriptionState.value = description
+                        _priorityState.value = priority
+                    }
                     _screenState.value = SuccessState.Completed
                 }.launchIn(viewModelScope)
-
             } else {
                 _isNewTask.value = true
             }
@@ -79,13 +83,7 @@ class DetailTaskViewModel @Inject constructor(
             is AppBarDetailEvent.DeleteTask -> {
                 currentTaskId?.let { id ->
                     viewModelScope.launch {
-                        val task: ToDoTask? = repository.getTaskById(id).firstOrNull()
-                        task?.let {
-                            withContext(Dispatchers.IO) {
-                                repository.deleteTaskById(it.id)
-                            }
-                            _uiEventFlow.emit(DetailTaskNavigation.AfterAddOrUpdateNavigation)
-                        }
+                        _uiEventFlow.emit(DetailTaskNavigation.DeleteRequest(id))
                     }
                 }
             }

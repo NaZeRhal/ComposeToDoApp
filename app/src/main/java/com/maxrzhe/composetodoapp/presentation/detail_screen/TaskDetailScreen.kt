@@ -20,7 +20,6 @@ import com.maxrzhe.composetodoapp.presentation.detail_screen.events.DetailTaskNa
 import com.maxrzhe.composetodoapp.presentation.detail_screen.events.DetailUiEvent
 import com.maxrzhe.composetodoapp.presentation.detail_screen.viewmodel.DetailTaskViewModel
 import com.maxrzhe.composetodoapp.presentation.states.CommonScreenState
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -41,9 +40,7 @@ fun TaskDetailScreen(
     LaunchedEffect(key1 = true) {
         detailTaskViewModel.uiEventFlow.collectLatest { event ->
             when (event) {
-                DetailTaskNavigation.AfterAddOrUpdateNavigation -> {
-                    navigateToListScreen(event)
-                }
+                is DetailTaskNavigation -> navigateToListScreen(event)
                 is DetailShowEvent.ShowSnackBar -> {
                     scaffoldState.snackbarHostState.showSnackbar(
                         message = event.message

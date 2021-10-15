@@ -1,17 +1,17 @@
 package com.maxrzhe.composetodoapp.presentation.tasks_screen
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Scaffold
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.maxrzhe.composetodoapp.presentation.TAG
 import com.maxrzhe.composetodoapp.presentation.states.CommonScreenState
 import com.maxrzhe.composetodoapp.presentation.states.SuccessState
 import com.maxrzhe.composetodoapp.presentation.tasks_screen.components.TaskListContent
@@ -30,17 +30,23 @@ fun TasksListScreen(
     val screenState = viewModel.screenState.value
     val scaffoldState = rememberScaffoldState()
 
-//    LaunchedEffect(key1 = true) {
-//        viewModel.getAllTasks()
-//    }
-
     LaunchedEffect(key1 = true) {
         viewModel.uiEventFlow.collectLatest { event ->
             when (event) {
-                is TasksListUiEvent.ShowSnackBar -> {
+                is TasksListUiEvent.ShowErrorSnackBar -> {
                     scaffoldState.snackbarHostState.showSnackbar(
                         message = event.message
                     )
+                }
+                is TasksListUiEvent.ShowDeleteSnackBar -> {
+                    val snackBarResult = scaffoldState.snackbarHostState.showSnackbar(
+                        message = event.message,
+                        actionLabel = "UNDO",
+                        duration = SnackbarDuration.Long
+                    )
+                    if (snackBarResult == SnackbarResult.ActionPerformed) {
+                        viewModel.onRestoreTask()
+                    }
                 }
             }
         }

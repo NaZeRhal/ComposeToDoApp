@@ -3,29 +3,40 @@ package com.maxrzhe.composetodoapp.presentation.tasks_screen.viewmodel
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.maxrzhe.composetodoapp.data.models.ToDoTask
 import com.maxrzhe.composetodoapp.domain.repository.ToDoRepository
 import com.maxrzhe.composetodoapp.presentation.TAG
+import com.maxrzhe.composetodoapp.presentation.navigation.Screens
 import com.maxrzhe.composetodoapp.presentation.states.CommonScreenState
-import com.maxrzhe.composetodoapp.presentation.tasks_screen.events.TaskListEvent
 import com.maxrzhe.composetodoapp.presentation.states.ScreenState
 import com.maxrzhe.composetodoapp.presentation.states.SuccessState
+import com.maxrzhe.composetodoapp.presentation.tasks_screen.events.TaskListEvent
 import com.maxrzhe.composetodoapp.presentation.tasks_screen.events.TasksListUiEvent
 import com.maxrzhe.composetodoapp.presentation.tasks_screen.states.SearchAppBarState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class TasksListViewModel @Inject constructor(
-    private val repository: ToDoRepository
+    private val repository: ToDoRepository,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+
+    private var job: Job? = null
+
+    private var lastDeletedTask: ToDoTask? = null
 
     private val _searchAppBarState = mutableStateOf<SearchAppBarState>(SearchAppBarState.Closed)
     val searchAppBarState: State<SearchAppBarState> = _searchAppBarState
@@ -40,6 +51,11 @@ class TasksListViewModel @Inject constructor(
     val uiEventFlow = _uiEventFlow.asSharedFlow()
 
     init {
+        savedStateHandle.get<Int>(Screens.TasksList.DELETE_TASK_KEY)?.let { id ->
+            if (id > -1) {
+                deleteTask(id)
+            }
+        }
         getAllTasks()
     }
 
@@ -63,16 +79,18 @@ class TasksListViewModel @Inject constructor(
                 viewModelScope.launch {
                     try {
                         repository.searchDatabase(taskListEvent.text).collect {
+                            Log.i(TAG, "onAppBarEvent: $it")
                             _screenState.value = SuccessState.WithData(it)
                         }
                     } catch (e: Exception) {
                         _uiEventFlow.emit(
-                            TasksListUiEvent.ShowSnackBar(
+                            TasksListUiEvent.ShowErrorSnackBar(
                                 e.localizedMessage ?: "Unexpected error"
                             )
                         )
                     }
                 }
+                _searchAppBarState.value = SearchAppBarState.Triggered
             }
             is TaskListEvent.DeleteAll -> {
                 viewModelScope.launch {
@@ -85,8 +103,31 @@ class TasksListViewModel @Inject constructor(
         }
     }
 
-    private fun getAllTasks() {
+    fun onRestoreTask() {
         viewModelScope.launch {
+            lastDeletedTask?.let {
+                repository.addTask(it)
+            }
+        }
+    }
+
+    private fun deleteTask(taskId: Int) {
+        viewModelScope.launch {
+            val task: ToDoTask? = repository.getTaskById(taskId).firstOrNull()
+            task?.let {
+                lastDeletedTask = it
+                withContext(IO) {
+                    repository.deleteTaskById(taskId)
+                }
+                delay(500)
+                _uiEventFlow.emit(TasksListUiEvent.ShowDeleteSnackBar("Task deleted"))
+            }
+        }
+    }
+
+    private fun getAllTasks() {
+        job?.cancel()
+        job = viewModelScope.launch {
             _screenState.value = CommonScreenState.Loading
             delay(400)
             try {
@@ -95,7 +136,7 @@ class TasksListViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 _uiEventFlow.emit(
-                    TasksListUiEvent.ShowSnackBar(
+                    TasksListUiEvent.ShowDeleteSnackBar(
                         e.localizedMessage ?: "Unexpected error"
                     )
                 )

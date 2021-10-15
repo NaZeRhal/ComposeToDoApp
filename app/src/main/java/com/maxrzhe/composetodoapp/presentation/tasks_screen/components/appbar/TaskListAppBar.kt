@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -21,9 +22,9 @@ import com.maxrzhe.composetodoapp.R
 import com.maxrzhe.composetodoapp.data.models.Priority
 import com.maxrzhe.composetodoapp.presentation.tasks_screen.events.TaskListEvent
 import com.maxrzhe.composetodoapp.presentation.tasks_screen.states.SearchAppBarState
+import com.maxrzhe.composetodoapp.presentation.tasks_screen.viewmodel.TasksListViewModel
 import com.maxrzhe.composetodoapp.presentation.ui.theme.SEARCH_TOP_BAR_HEIGHT
 import com.maxrzhe.composetodoapp.presentation.ui.theme.topAppBarContentColor
-import com.maxrzhe.composetodoapp.presentation.tasks_screen.viewmodel.TasksListViewModel
 
 @Composable
 fun TaskListAppBar(
@@ -93,6 +94,9 @@ fun SearchAppBar(
     onSearchClick: (String) -> Unit,
     onCloseClick: () -> Unit
 ) {
+
+    val focusManager = LocalFocusManager.current
+
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -149,7 +153,10 @@ fun SearchAppBar(
             ),
             keyboardActions = KeyboardActions(
                 onSearch = {
-                    onSearchClick(text)
+                    if(text.isNotEmpty()) {
+                        onSearchClick(text)
+                        focusManager.clearFocus()
+                    }
                 }
             ),
             colors = TextFieldDefaults.textFieldColors(

@@ -7,17 +7,28 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.maxrzhe.composetodoapp.presentation.TAG
-import com.maxrzhe.composetodoapp.presentation.detail_screen.events.AppBarDetailEvent
 import com.maxrzhe.composetodoapp.presentation.detail_screen.TaskDetailScreen
 import com.maxrzhe.composetodoapp.presentation.detail_screen.events.DetailUiEvent
 import com.maxrzhe.composetodoapp.presentation.navigation.Screens.DetailTask.TASK_ARG_KEY
+import com.maxrzhe.composetodoapp.presentation.navigation.Screens.TasksList.DELETE_TASK_KEY
 import com.maxrzhe.composetodoapp.presentation.tasks_screen.TasksListScreen
 
 @ExperimentalMaterialApi
 fun NavGraphBuilder.taskListComposable(
     navigateToDetailScreen: (taskId: Int) -> Unit
 ) {
-    composable(Screens.TasksList.route) {
+    composable(
+        route = Screens.TasksList.route,
+        arguments = listOf(
+            navArgument(
+                name = DELETE_TASK_KEY
+            ) {
+                type = NavType.IntType
+                defaultValue = -1
+            })
+    ) { navBackStackEntry ->
+        val deleteTaskId = navBackStackEntry.arguments?.getInt(DELETE_TASK_KEY)
+        Log.i(TAG, "taskListComposable: $deleteTaskId")
         TasksListScreen(navigateToDetailScreen = navigateToDetailScreen)
     }
 }

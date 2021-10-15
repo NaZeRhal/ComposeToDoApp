@@ -8,9 +8,16 @@ import com.maxrzhe.composetodoapp.presentation.detail_screen.events.DetailUiEven
 class Router(navController: NavController) {
     val goToTasksList: (event: DetailUiEvent) -> Unit = { event ->
         when (event) {
-            is DetailShowEvent.ShowSnackBar -> { }
+            is DetailShowEvent -> { }
             DetailTaskNavigation.AfterAddOrUpdateNavigation -> {
                 navController.navigate(Screens.TasksList.route) {
+                    popUpTo(Screens.TasksList.route) {
+                        inclusive = true
+                    }
+                }
+            }
+            is DetailTaskNavigation.DeleteRequest -> {
+                navController.navigate(Screens.TasksList.createRoute(event.deleteTaskId)) {
                     popUpTo(Screens.TasksList.route) {
                         inclusive = true
                     }
