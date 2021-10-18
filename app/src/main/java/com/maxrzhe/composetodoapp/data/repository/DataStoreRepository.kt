@@ -20,7 +20,7 @@ import javax.inject.Inject
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = Constants.PREFERENCE_NAME)
 
 @ViewModelScoped
-class DataStoreRepositoryImpl @Inject constructor(
+class DataStoreRepository @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
 

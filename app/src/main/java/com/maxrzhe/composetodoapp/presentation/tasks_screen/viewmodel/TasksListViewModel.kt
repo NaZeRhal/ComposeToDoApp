@@ -6,7 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.maxrzhe.composetodoapp.data.models.Priority
 import com.maxrzhe.composetodoapp.data.models.ToDoTask
+import com.maxrzhe.composetodoapp.data.repository.DataStoreRepository
 import com.maxrzhe.composetodoapp.domain.repository.ToDoRepository
 import com.maxrzhe.composetodoapp.presentation.TAG
 import com.maxrzhe.composetodoapp.presentation.navigation.Screens
@@ -31,6 +33,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TasksListViewModel @Inject constructor(
     private val repository: ToDoRepository,
+    private val dataStoreRepository: DataStoreRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -56,10 +59,11 @@ class TasksListViewModel @Inject constructor(
                 deleteTask(id)
             }
         }
-        getAllTasks()
+        retrieveTaskByStoreState()
     }
 
     fun onAppBarEvent(taskListEvent: TaskListEvent) {
+        Log.i(TAG, "onAppBarEvent: $taskListEvent")
         when (taskListEvent) {
             is TaskListEvent.CloseSearchBar -> {
                 _searchAppBarState.value = SearchAppBarState.Closed
@@ -94,20 +98,33 @@ class TasksListViewModel @Inject constructor(
                 _searchAppBarState.value = SearchAppBarState.Triggered
             }
             is TaskListEvent.DeleteAll -> {
-                viewModelScope.launch {
+                viewModelScope.launch(IO) {
                     repository.deleteAll()
                 }
             }
             is TaskListEvent.Sort -> {
-
+                val priority = taskListEvent.priority
+                Log.i(TAG, "onAppBarEvent: $priority")
+                viewModelScope.launch(IO) {
+                    dataStoreRepository.persistSortState(priority)
+                    getAllTasks(priority)
+                }
             }
         }
     }
 
     fun onRestoreTask() {
-        viewModelScope.launch {
+        viewModelScope.launch(IO) {
             lastDeletedTask?.let {
                 repository.addTask(it)
+            }
+        }
+    }
+
+    private fun retrieveTaskByStoreState() {
+        viewModelScope.launch(IO) {
+            dataStoreRepository.readSortState.firstOrNull()?.let { priorityName ->
+                getAllTasks(Priority.valueOf(priorityName))
             }
         }
     }
@@ -126,14 +143,28 @@ class TasksListViewModel @Inject constructor(
         }
     }
 
-    private fun getAllTasks() {
+    private fun getAllTasks(priority: Priority = Priority.NONE) {
         job?.cancel()
         job = viewModelScope.launch {
             _screenState.value = CommonScreenState.Loading
             delay(400)
             try {
-                repository.getAllTasks().collect {
-                    _screenState.value = SuccessState.WithData(it)
+                when (priority) {
+                    Priority.LOW -> {
+                        repository.sortByLowPriority().collect {
+                            _screenState.value = SuccessState.WithData(it)
+                        }
+                    }
+                    Priority.HIGH -> {
+                        repository.sortByHighPriority().collect {
+                            _screenState.value = SuccessState.WithData(it)
+                        }
+                    }
+                    else -> {
+                        repository.getAllTasks().collect {
+                            _screenState.value = SuccessState.WithData(it)
+                        }
+                    }
                 }
             } catch (e: Exception) {
                 _uiEventFlow.emit(

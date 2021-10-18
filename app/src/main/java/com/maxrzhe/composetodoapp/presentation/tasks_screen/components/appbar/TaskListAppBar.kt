@@ -1,5 +1,6 @@
 package com.maxrzhe.composetodoapp.presentation.tasks_screen.components.appbar
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,6 +21,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import com.maxrzhe.composetodoapp.R
 import com.maxrzhe.composetodoapp.data.models.Priority
+import com.maxrzhe.composetodoapp.presentation.TAG
 import com.maxrzhe.composetodoapp.presentation.components.DisplayAlertDialog
 import com.maxrzhe.composetodoapp.presentation.tasks_screen.events.TaskListEvent
 import com.maxrzhe.composetodoapp.presentation.tasks_screen.states.SearchAppBarState
@@ -38,7 +40,8 @@ fun TaskListAppBar(
             DefaultAppBar(
                 onSearchClick = { viewModel.onAppBarEvent(TaskListEvent.OpenSearchBar) },
                 onSortClick = { priority ->
-                    TaskListEvent.Sort(priority)
+                    Log.i(TAG, "TaskListAppBar: $priority")
+                    viewModel.onAppBarEvent(TaskListEvent.Sort(priority))
                 },
                 onDeleteAllClick = {
                     viewModel.onAppBarEvent(TaskListEvent.DeleteAll)

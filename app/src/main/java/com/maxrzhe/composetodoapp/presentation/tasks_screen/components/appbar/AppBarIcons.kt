@@ -1,5 +1,6 @@
 package com.maxrzhe.composetodoapp.presentation.tasks_screen.components.appbar
 
+import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -12,6 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.maxrzhe.composetodoapp.R
 import com.maxrzhe.composetodoapp.data.models.Priority
+import com.maxrzhe.composetodoapp.presentation.TAG
 import com.maxrzhe.composetodoapp.presentation.ui.theme.MEDIUM_PADDING
 
 @Composable
@@ -48,6 +50,7 @@ fun SortIconButton(onSortIconClick: (Priority) -> Unit) {
                 DropdownMenuItem(
                     onClick = {
                         expanded = false
+                        Log.i(TAG, "SortIconButton: $priority")
                         onSortIconClick(priority)
                     }
                 ) {
