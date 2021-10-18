@@ -20,6 +20,10 @@ val NonePriorityColor = Color(0xff9c9c9c)
 
 val FabDarkBackgroundColor = Color(0xFF148423)
 
+val Colors.splashScreenBackgroundColor: Color
+    @Composable
+    get() = if (isLight) Purple700 else Color.Black
+
 val Colors.topAppBarContentColor: Color
     @Composable
     get() = if (isLight) Color.White else Color.LightGray
@@ -39,3 +43,11 @@ val Colors.taskItemBackgroundColor: Color
 val Colors.taskItemTextColor: Color
     @Composable
     get() = if (isLight) DarkGray else LightGray
+
+val Colors.focusedBorderColor: Color
+    @Composable
+    get() = if (isLight) Purple700 else MediumPriorityColor
+
+val Colors.focusedLabelColor: Color
+    @Composable
+    get() = if (isLight) Purple700 else MediumPriorityColor

@@ -3,6 +3,7 @@ package com.maxrzhe.composetodoapp.presentation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.navigation.compose.rememberNavController
@@ -13,15 +14,17 @@ import dagger.hilt.android.AndroidEntryPoint
 const val TAG = "DBG"
 
 @ExperimentalMaterialApi
+@ExperimentalAnimationApi
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
             ComposeToDoAppTheme {
-                Scaffold() {
+                Scaffold {
                     SetupNavigation(navController = navController)
                 }
             }

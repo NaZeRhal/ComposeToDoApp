@@ -1,5 +1,6 @@
 package com.maxrzhe.composetodoapp.presentation.tasks_screen
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
@@ -19,6 +20,7 @@ import com.maxrzhe.composetodoapp.presentation.tasks_screen.events.TasksListUiEv
 import com.maxrzhe.composetodoapp.presentation.tasks_screen.viewmodel.TasksListViewModel
 import kotlinx.coroutines.flow.collectLatest
 
+@ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
 fun TasksListScreen(
@@ -40,7 +42,7 @@ fun TasksListScreen(
                     val snackBarResult = scaffoldState.snackbarHostState.showSnackbar(
                         message = event.message,
                         actionLabel = "UNDO",
-                        duration = SnackbarDuration.Long
+                        duration = SnackbarDuration.Short
                     )
                     if (snackBarResult == SnackbarResult.ActionPerformed) {
                         listViewModel.onRestoreTask()
@@ -80,6 +82,7 @@ fun TasksListScreen(
     }
 }
 
+@ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
 @Preview

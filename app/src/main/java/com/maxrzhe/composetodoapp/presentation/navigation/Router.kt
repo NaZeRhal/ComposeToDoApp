@@ -6,7 +6,7 @@ import com.maxrzhe.composetodoapp.presentation.detail_screen.events.DetailTaskNa
 import com.maxrzhe.composetodoapp.presentation.detail_screen.events.DetailUiEvent
 
 class Router(navController: NavController) {
-    val goToTasksList: (event: DetailUiEvent) -> Unit = { event ->
+    val fromDetailToList: (event: DetailUiEvent) -> Unit = { event ->
         when (event) {
             is DetailShowEvent -> { }
             DetailTaskNavigation.AfterAddOrUpdateNavigation -> {
@@ -26,9 +26,17 @@ class Router(navController: NavController) {
         }
     }
 
-    val goToTaskDetail: (Int) -> Unit = { taskId ->
+    val fromListToDetail: (Int) -> Unit = { taskId ->
         navController.navigate(Screens.DetailTask.createRoute(taskId)) {
             launchSingleTop = true
+        }
+    }
+
+    val fromSplashToList: () -> Unit = {
+        navController.navigate(Screens.TasksList.route) {
+            popUpTo(Screens.Splash.route) {
+                inclusive = true
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.maxrzhe.composetodoapp.presentation.navigation
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
@@ -9,8 +10,10 @@ import com.maxrzhe.composetodoapp.presentation.detail_screen.TaskDetailScreen
 import com.maxrzhe.composetodoapp.presentation.detail_screen.events.DetailUiEvent
 import com.maxrzhe.composetodoapp.presentation.navigation.Screens.DetailTask.TASK_ARG_KEY
 import com.maxrzhe.composetodoapp.presentation.navigation.Screens.TasksList.DELETE_TASK_KEY
+import com.maxrzhe.composetodoapp.presentation.splash_screen.SplashScreen
 import com.maxrzhe.composetodoapp.presentation.tasks_screen.TasksListScreen
 
+@ExperimentalAnimationApi
 @ExperimentalMaterialApi
 fun NavGraphBuilder.taskListComposable(
     navigateToDetailScreen: (taskId: Int) -> Unit
@@ -39,6 +42,16 @@ fun NavGraphBuilder.taskDetailComposable(
         })
     ) {
         TaskDetailScreen(navigateToListScreen = navigateToListScreen)
+    }
+}
+
+fun NavGraphBuilder.splashScreenComposable(
+    navigateToListScreen: () -> Unit
+) {
+    composable(
+        route = Screens.Splash.route
+    ) {
+        SplashScreen(navigateToListScreen = navigateToListScreen)
     }
 }
 

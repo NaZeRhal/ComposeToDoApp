@@ -2,10 +2,7 @@ package com.maxrzhe.composetodoapp.presentation.detail_screen.components
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -16,19 +13,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import com.maxrzhe.composetodoapp.R
 import com.maxrzhe.composetodoapp.data.models.Priority
 import com.maxrzhe.composetodoapp.presentation.tasks_screen.components.appbar.PriorityItem
-import com.maxrzhe.composetodoapp.presentation.ui.theme.MEDIUM_PADDING
 import com.maxrzhe.composetodoapp.presentation.ui.theme.PRIORITY_DROP_DOWN_HEIGHT
 import com.maxrzhe.composetodoapp.presentation.ui.theme.PRIORITY_INDICATOR_SIZE
+import com.maxrzhe.composetodoapp.presentation.ui.theme.focusedBorderColor
 
 @Composable
 fun PriorityDropDown(
@@ -56,7 +53,7 @@ fun PriorityDropDown(
             .clickable { expanded = true }
             .border(
                 width = 1.dp,
-                color = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled),
+                color = getBorderColor(expanded),
                 shape = MaterialTheme.shapes.small
             )
             .background(color = MaterialTheme.colors.background),
@@ -106,6 +103,15 @@ fun PriorityDropDown(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun getBorderColor(expanded: Boolean): Color {
+    return if (expanded) {
+        MaterialTheme.colors.focusedBorderColor
+    } else {
+        MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
     }
 }
 

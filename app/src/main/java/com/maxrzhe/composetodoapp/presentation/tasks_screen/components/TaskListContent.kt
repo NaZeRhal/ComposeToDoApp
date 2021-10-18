@@ -1,6 +1,11 @@
 package com.maxrzhe.composetodoapp.presentation.tasks_screen.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,7 +23,10 @@ import com.maxrzhe.composetodoapp.R
 import com.maxrzhe.composetodoapp.data.models.ToDoTask
 import com.maxrzhe.composetodoapp.presentation.ui.theme.EMPTY_TASKS_ICON_SIZE
 import com.maxrzhe.composetodoapp.presentation.ui.theme.MediumGray
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
+@ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
 fun TaskListContent(
@@ -39,7 +47,12 @@ fun TaskListContent(
                 val isDismissed = dismissState.isDismissed(DismissDirection.EndToStart)
 
                 if (isDismissed && dismissDirection == DismissDirection.EndToStart) {
-                    onSwipeToDelete(task.id)
+                    val scope = rememberCoroutineScope()
+                    scope.launch {
+                        delay(300)
+                        onSwipeToDelete(task.id)
+                    }
+
                 }
 
                 val degrees by animateFloatAsState(
@@ -50,16 +63,32 @@ fun TaskListContent(
                         -45f
                 )
 
-                SwipeToDismiss(
-                    state = dismissState,
-                    directions = setOf(DismissDirection.EndToStart),
-                    dismissThresholds = { FractionalThreshold(fraction = 0.2f) },
-                    background = { TaskItemRedBackground(degrees = degrees) }
-                ) {
-                    TaskItem(
-                        toDoTask = task,
-                        navigateToDetailScreen = navigateToDetailScreen
+                var itemAppeared by remember { mutableStateOf(false) }
+
+                LaunchedEffect(key1 = true) {
+                    itemAppeared = true
+                }
+
+                AnimatedVisibility(
+                    visible = itemAppeared && !isDismissed,
+                    enter = expandVertically(
+                        animationSpec = tween(durationMillis = 300)
+                    ),
+                    exit = shrinkVertically(
+                        animationSpec = tween(durationMillis = 300)
                     )
+                ) {
+                    SwipeToDismiss(
+                        state = dismissState,
+                        directions = setOf(DismissDirection.EndToStart),
+                        dismissThresholds = { FractionalThreshold(fraction = 0.2f) },
+                        background = { TaskItemRedBackground(degrees = degrees) }
+                    ) {
+                        TaskItem(
+                            toDoTask = task,
+                            navigateToDetailScreen = navigateToDetailScreen
+                        )
+                    }
                 }
             }
         }

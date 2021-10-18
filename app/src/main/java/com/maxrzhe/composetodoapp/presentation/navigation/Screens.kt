@@ -10,4 +10,6 @@ sealed class Screens(val route: String) {
         const val TASK_ARG_KEY = "taskId"
         fun createRoute(taskId: Int): String = "detail_task/$taskId"
     }
+
+    object Splash: Screens("splash_screen")
 }

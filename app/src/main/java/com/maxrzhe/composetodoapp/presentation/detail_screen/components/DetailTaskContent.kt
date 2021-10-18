@@ -6,6 +6,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
@@ -16,6 +17,8 @@ import com.maxrzhe.composetodoapp.data.models.Priority
 import com.maxrzhe.composetodoapp.presentation.detail_screen.events.TaskChangeEvent
 import com.maxrzhe.composetodoapp.presentation.ui.theme.LARGE_PADDING
 import com.maxrzhe.composetodoapp.presentation.ui.theme.SMALL_PADDING
+import com.maxrzhe.composetodoapp.presentation.ui.theme.focusedBorderColor
+import com.maxrzhe.composetodoapp.presentation.ui.theme.focusedLabelColor
 
 @Composable
 fun DetailTaskContent(
@@ -47,6 +50,10 @@ fun DetailTaskContent(
                 onDone = {
                     focusManager.clearFocus()
                 }
+            ),
+            colors = outlinedTextFieldColors(
+                focusedBorderColor = MaterialTheme.colors.focusedBorderColor,
+                focusedLabelColor = MaterialTheme.colors.focusedLabelColor
             )
         )
         Spacer(modifier = Modifier.height(SMALL_PADDING))
@@ -65,7 +72,11 @@ fun DetailTaskContent(
             label = {
                 Text(text = stringResource(R.string.description_text_field))
             },
-            textStyle = MaterialTheme.typography.body1
+            textStyle = MaterialTheme.typography.body1,
+            colors = outlinedTextFieldColors(
+                focusedBorderColor = MaterialTheme.colors.focusedBorderColor,
+                focusedLabelColor = MaterialTheme.colors.focusedLabelColor
+            )
         )
     }
 }
