@@ -1,16 +1,14 @@
 package com.maxrzhe.composetodoapp.presentation.tasks_screen.components
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.SentimentVeryDissatisfied
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -25,7 +23,8 @@ import com.maxrzhe.composetodoapp.presentation.ui.theme.MediumGray
 @Composable
 fun TaskListContent(
     tasks: List<ToDoTask>,
-    navigateToDetailScreen: (taskId: Int) -> Unit
+    navigateToDetailScreen: (taskId: Int) -> Unit,
+    onSwipeToDelete: (taskId: Int) -> Unit
 ) {
     if (tasks.isEmpty()) {
         EmptyContent()
@@ -35,10 +34,33 @@ fun TaskListContent(
                 items = tasks,
                 key = { task -> task.id }
             ) { task ->
-                TaskItem(
-                    toDoTask = task,
-                    navigateToDetailScreen = navigateToDetailScreen
+                val dismissState = rememberDismissState()
+                val dismissDirection = dismissState.dismissDirection
+                val isDismissed = dismissState.isDismissed(DismissDirection.EndToStart)
+
+                if (isDismissed && dismissDirection == DismissDirection.EndToStart) {
+                    onSwipeToDelete(task.id)
+                }
+
+                val degrees by animateFloatAsState(
+                    targetValue =
+                    if (dismissState.targetValue == DismissValue.Default)
+                        0f
+                    else
+                        -45f
                 )
+
+                SwipeToDismiss(
+                    state = dismissState,
+                    directions = setOf(DismissDirection.EndToStart),
+                    dismissThresholds = { FractionalThreshold(fraction = 0.2f) },
+                    background = { TaskItemRedBackground(degrees = degrees) }
+                ) {
+                    TaskItem(
+                        toDoTask = task,
+                        navigateToDetailScreen = navigateToDetailScreen
+                    )
+                }
             }
         }
     }

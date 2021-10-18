@@ -74,25 +74,25 @@ class DetailTaskViewModel @Inject constructor(
         }
     }
 
-    fun onAppBarEvent(event: AppBarDetailEvent) {
+    fun onAppBarEvent(event: DetailScreenEvent) {
         when (event) {
-            is AppBarDetailEvent.AddOrUpdateTask -> {
+            is DetailScreenEvent.AddOrUpdateTask -> {
                 val task = collectTaskFields()
                 addOrUpdateTask(task)
             }
-            is AppBarDetailEvent.DeleteTask -> {
+            is DetailScreenEvent.DeleteTask -> {
                 currentTaskId?.let { id ->
                     viewModelScope.launch {
                         _uiEventFlow.emit(DetailTaskNavigation.DeleteRequest(id))
                     }
                 }
             }
-            AppBarDetailEvent.Back -> {
+            DetailScreenEvent.Back -> {
                 viewModelScope.launch {
                     _uiEventFlow.emit(DetailTaskNavigation.AfterAddOrUpdateNavigation)
                 }
             }
-            AppBarDetailEvent.Close -> {
+            DetailScreenEvent.Close -> {
                 viewModelScope.launch {
                     _uiEventFlow.emit(DetailTaskNavigation.AfterAddOrUpdateNavigation)
                 }

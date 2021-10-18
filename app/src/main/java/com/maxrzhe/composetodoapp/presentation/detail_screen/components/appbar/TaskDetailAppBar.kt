@@ -10,7 +10,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.maxrzhe.composetodoapp.R
 import com.maxrzhe.composetodoapp.core.util.AppBarDetailClickEvent
 import com.maxrzhe.composetodoapp.presentation.components.DisplayAlertDialog
-import com.maxrzhe.composetodoapp.presentation.detail_screen.events.AppBarDetailEvent
+import com.maxrzhe.composetodoapp.presentation.detail_screen.events.DetailScreenEvent
 
 @Composable
 fun TaskDetailAppBar(
@@ -94,7 +94,7 @@ fun UpdateAppBarActions(
         },
         onConfirm = {
             openDialog = false
-            onAppBarButtonClick(AppBarDetailEvent.DeleteTask)
+            onAppBarButtonClick(DetailScreenEvent.DeleteTask)
         }
     )
 
@@ -107,7 +107,7 @@ fun UpdateAppBarActions(
 fun BackButton(
     onBackClick: AppBarDetailClickEvent
 ) {
-    IconButton(onClick = { onBackClick(AppBarDetailEvent.Back) }) {
+    IconButton(onClick = { onBackClick(DetailScreenEvent.Back) }) {
         Icon(
             imageVector = Icons.Default.ArrowBack,
             contentDescription = stringResource(
@@ -122,7 +122,7 @@ fun BackButton(
 fun AddButton(
     onAddClick: AppBarDetailClickEvent
 ) {
-    IconButton(onClick = { onAddClick(AppBarDetailEvent.AddOrUpdateTask) }) {
+    IconButton(onClick = { onAddClick(DetailScreenEvent.AddOrUpdateTask) }) {
         Icon(
             imageVector = Icons.Default.Check,
             contentDescription = stringResource(
@@ -137,7 +137,7 @@ fun AddButton(
 fun CloseButton(
     onCloseClick: AppBarDetailClickEvent
 ) {
-    IconButton(onClick = { onCloseClick(AppBarDetailEvent.Close) }) {
+    IconButton(onClick = { onCloseClick(DetailScreenEvent.Close) }) {
         Icon(
             imageVector = Icons.Default.Close,
             contentDescription = stringResource(
@@ -152,7 +152,7 @@ fun CloseButton(
 fun SaveUpdatesButton(
     onUpdateClick: AppBarDetailClickEvent
 ) {
-    IconButton(onClick = { onUpdateClick(AppBarDetailEvent.AddOrUpdateTask) }) {
+    IconButton(onClick = { onUpdateClick(DetailScreenEvent.AddOrUpdateTask) }) {
         Icon(
             imageVector = Icons.Default.Save,
             contentDescription = stringResource(

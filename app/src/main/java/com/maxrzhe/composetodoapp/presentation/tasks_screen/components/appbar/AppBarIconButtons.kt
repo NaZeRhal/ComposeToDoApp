@@ -50,7 +50,6 @@ fun SortIconButton(onSortIconClick: (Priority) -> Unit) {
                 DropdownMenuItem(
                     onClick = {
                         expanded = false
-                        Log.i(TAG, "SortIconButton: $priority")
                         onSortIconClick(priority)
                     }
                 ) {

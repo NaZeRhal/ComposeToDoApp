@@ -27,7 +27,7 @@ fun PriorityItem(priority: Priority) {
         Spacer(modifier = Modifier.width(MEDIUM_PADDING))
         Text(
             text = priority.name,
-            style = Typography.subtitle1,
+            style = Typography.subtitle2,
             color = MaterialTheme.colors.onSurface
         )
     }

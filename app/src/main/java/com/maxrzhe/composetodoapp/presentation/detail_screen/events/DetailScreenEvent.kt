@@ -3,11 +3,11 @@ package com.maxrzhe.composetodoapp.presentation.detail_screen.events
 import com.maxrzhe.composetodoapp.data.models.Priority
 
 
-sealed class AppBarDetailEvent {
-    object AddOrUpdateTask : AppBarDetailEvent()
-    object DeleteTask : AppBarDetailEvent()
-    object Back : AppBarDetailEvent()
-    object Close : AppBarDetailEvent()
+sealed class DetailScreenEvent {
+    object AddOrUpdateTask : DetailScreenEvent()
+    object DeleteTask : DetailScreenEvent()
+    object Back : DetailScreenEvent()
+    object Close : DetailScreenEvent()
 }
 
 sealed class TaskChangeEvent {

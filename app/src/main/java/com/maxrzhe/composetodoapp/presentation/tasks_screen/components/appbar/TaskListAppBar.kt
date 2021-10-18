@@ -23,7 +23,7 @@ import com.maxrzhe.composetodoapp.R
 import com.maxrzhe.composetodoapp.data.models.Priority
 import com.maxrzhe.composetodoapp.presentation.TAG
 import com.maxrzhe.composetodoapp.presentation.components.DisplayAlertDialog
-import com.maxrzhe.composetodoapp.presentation.tasks_screen.events.TaskListEvent
+import com.maxrzhe.composetodoapp.presentation.tasks_screen.events.TasksListScreenEvent
 import com.maxrzhe.composetodoapp.presentation.tasks_screen.states.SearchAppBarState
 import com.maxrzhe.composetodoapp.presentation.tasks_screen.viewmodel.TasksListViewModel
 import com.maxrzhe.composetodoapp.presentation.ui.theme.SEARCH_TOP_BAR_HEIGHT
@@ -38,13 +38,12 @@ fun TaskListAppBar(
     when (viewModel.searchAppBarState.value) {
         is SearchAppBarState.Closed -> {
             DefaultAppBar(
-                onSearchClick = { viewModel.onAppBarEvent(TaskListEvent.OpenSearchBar) },
+                onSearchClick = { viewModel.onEvent(TasksListScreenEvent.OpenSearchBar) },
                 onSortClick = { priority ->
-                    Log.i(TAG, "TaskListAppBar: $priority")
-                    viewModel.onAppBarEvent(TaskListEvent.Sort(priority))
+                    viewModel.onEvent(TasksListScreenEvent.Sort(priority))
                 },
                 onDeleteAllClick = {
-                    viewModel.onAppBarEvent(TaskListEvent.DeleteAll)
+                    viewModel.onEvent(TasksListScreenEvent.DeleteAll)
                 }
             )
         }
@@ -52,18 +51,18 @@ fun TaskListAppBar(
             SearchAppBar(
                 text = text,
                 onValueChange = { newText ->
-                    viewModel.onAppBarEvent(TaskListEvent.ChangeSearchText(newText))
+                    viewModel.onEvent(TasksListScreenEvent.ChangeSearchText(newText))
                 },
                 onSearchClick = { searchText ->
                     if (text.isNotBlank()) {
-                        viewModel.onAppBarEvent(TaskListEvent.Search(searchText))
+                        viewModel.onEvent(TasksListScreenEvent.Search(searchText))
                     }
                 },
                 onCloseClick = {
                     if (text.isBlank() && viewModel.searchAppBarState.value !is SearchAppBarState.Triggered) {
-                        viewModel.onAppBarEvent(TaskListEvent.CloseSearchBar)
+                        viewModel.onEvent(TasksListScreenEvent.CloseSearchBar)
                     } else {
-                        viewModel.onAppBarEvent(TaskListEvent.ClearSearchBar)
+                        viewModel.onEvent(TasksListScreenEvent.ClearSearchBar)
                     }
                 }
             )

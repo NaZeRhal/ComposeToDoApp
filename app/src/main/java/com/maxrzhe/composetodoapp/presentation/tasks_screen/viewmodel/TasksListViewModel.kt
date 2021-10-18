@@ -15,7 +15,7 @@ import com.maxrzhe.composetodoapp.presentation.navigation.Screens
 import com.maxrzhe.composetodoapp.presentation.states.CommonScreenState
 import com.maxrzhe.composetodoapp.presentation.states.ScreenState
 import com.maxrzhe.composetodoapp.presentation.states.SuccessState
-import com.maxrzhe.composetodoapp.presentation.tasks_screen.events.TaskListEvent
+import com.maxrzhe.composetodoapp.presentation.tasks_screen.events.TasksListScreenEvent
 import com.maxrzhe.composetodoapp.presentation.tasks_screen.events.TasksListUiEvent
 import com.maxrzhe.composetodoapp.presentation.tasks_screen.states.SearchAppBarState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -59,32 +59,32 @@ class TasksListViewModel @Inject constructor(
                 deleteTask(id)
             }
         }
-        retrieveTaskByStoreState()
+        retrieveTasksByStoreState()
     }
 
-    fun onAppBarEvent(taskListEvent: TaskListEvent) {
-        Log.i(TAG, "onAppBarEvent: $taskListEvent")
-        when (taskListEvent) {
-            is TaskListEvent.CloseSearchBar -> {
+    fun onEvent(event: TasksListScreenEvent) {
+        Log.i(TAG, "onAppBarEvent: $event")
+        when (event) {
+            is TasksListScreenEvent.CloseSearchBar -> {
                 _searchAppBarState.value = SearchAppBarState.Closed
             }
-            is TaskListEvent.OpenSearchBar -> {
+            is TasksListScreenEvent.OpenSearchBar -> {
                 _searchAppBarState.value = SearchAppBarState.Opened
             }
-            is TaskListEvent.ChangeSearchText -> {
-                _searchText.value = taskListEvent.newText
+            is TasksListScreenEvent.ChangeSearchText -> {
+                _searchText.value = event.newText
             }
-            is TaskListEvent.ClearSearchBar -> {
+            is TasksListScreenEvent.ClearSearchBar -> {
                 _searchText.value = ""
                 getAllTasks()
                 _searchAppBarState.value = SearchAppBarState.Opened
             }
-            is TaskListEvent.Search -> {
+            is TasksListScreenEvent.Search -> {
                 _screenState.value = CommonScreenState.Loading
                 viewModelScope.launch {
                     try {
-                        repository.searchDatabase("%${taskListEvent.text}%").collect {
-                            Log.i(TAG, "onAppBarEvent: $it")
+                        repository.searchDatabase("%${event.text}%").collect {
+                            Log.i(TAG, "onAppBarEvent: search$it")
                             _screenState.value = SuccessState.WithData(it)
                         }
                     } catch (e: Exception) {
@@ -97,18 +97,20 @@ class TasksListViewModel @Inject constructor(
                 }
                 _searchAppBarState.value = SearchAppBarState.Triggered
             }
-            is TaskListEvent.DeleteAll -> {
+            is TasksListScreenEvent.DeleteAll -> {
                 viewModelScope.launch(IO) {
                     repository.deleteAll()
                 }
             }
-            is TaskListEvent.Sort -> {
-                val priority = taskListEvent.priority
-                Log.i(TAG, "onAppBarEvent: $priority")
+            is TasksListScreenEvent.Sort -> {
+                val priority = event.priority
                 viewModelScope.launch(IO) {
                     dataStoreRepository.persistSortState(priority)
                     getAllTasks(priority)
                 }
+            }
+            is TasksListScreenEvent.Delete -> {
+                deleteTask(event.taskId)
             }
         }
     }
@@ -116,12 +118,13 @@ class TasksListViewModel @Inject constructor(
     fun onRestoreTask() {
         viewModelScope.launch(IO) {
             lastDeletedTask?.let {
-                repository.addTask(it)
+                Log.i(TAG, "onRestoreTask: $it")
+                repository.addTask(it.copy(id = 0))
             }
         }
     }
 
-    private fun retrieveTaskByStoreState() {
+    private fun retrieveTasksByStoreState() {
         viewModelScope.launch(IO) {
             dataStoreRepository.readSortState.firstOrNull()?.let { priorityName ->
                 getAllTasks(Priority.valueOf(priorityName))
@@ -133,6 +136,7 @@ class TasksListViewModel @Inject constructor(
         viewModelScope.launch {
             val task: ToDoTask? = repository.getTaskById(taskId).firstOrNull()
             task?.let {
+                Log.i(TAG, "deleteTask: task for delete = $it")
                 lastDeletedTask = it
                 withContext(IO) {
                     repository.deleteTaskById(taskId)
