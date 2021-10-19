@@ -5,10 +5,10 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
+import com.google.accompanist.navigation.animation.AnimatedNavHost
 
-@ExperimentalAnimationApi
 @ExperimentalMaterialApi
+@ExperimentalAnimationApi
 @Composable
 fun SetupNavigation(
     navController: NavHostController
@@ -17,7 +17,7 @@ fun SetupNavigation(
         Router(navController = navController)
     }
 
-    NavHost(
+    AnimatedNavHost(
         navController = navController,
         startDestination = Screens.Splash.route
     ) {

@@ -1,13 +1,15 @@
 package com.maxrzhe.composetodoapp.presentation.detail_screen
 
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -87,6 +89,30 @@ fun TaskDetailScreen(
         }
     }
 }
+
+//@Composable
+//fun BaskHandler(
+//    backPressedDispatcher: OnBackPressedDispatcher? = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher,
+//    onBackPressed: () -> Unit
+//) {
+//    val currentOnBackPressed by rememberUpdatedState(newValue = onBackPressed)
+//
+//    val backPressedCallback = remember {
+//        object : OnBackPressedCallback(true) {
+//            override fun handleOnBackPressed() {
+//                currentOnBackPressed()
+//            }
+//        }
+//    }
+//
+//    DisposableEffect(key1 = backPressedDispatcher) {
+//        backPressedDispatcher?.addCallback(backPressedCallback)
+//
+//        onDispose {
+//            backPressedCallback.remove()
+//        }
+//    }
+//}
 
 @Composable
 @Preview

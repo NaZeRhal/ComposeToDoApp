@@ -73,7 +73,10 @@ fun TasksListScreen(
             is SuccessState.WithData -> {
                 TaskListContent(
                     tasks = screenState.data,
-                    onSwipeToDelete = { listViewModel.onEvent(TasksListScreenEvent.Delete(it)) },
+                    onSwipeToDelete = {
+                        listViewModel.onEvent(TasksListScreenEvent.Delete(it))
+                        scaffoldState.snackbarHostState.currentSnackbarData?.dismiss()
+                    },
                     navigateToDetailScreen = navigateToDetailScreen
                 )
             }

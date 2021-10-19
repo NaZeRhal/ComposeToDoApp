@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
-import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.maxrzhe.composetodoapp.presentation.navigation.SetupNavigation
 import com.maxrzhe.composetodoapp.presentation.ui.theme.ComposeToDoAppTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,7 +22,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val navController = rememberNavController()
+            val navController = rememberAnimatedNavController()
             ComposeToDoAppTheme {
                 Scaffold {
                     SetupNavigation(navController = navController)
